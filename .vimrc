@@ -6,18 +6,23 @@ filetype on
 set hlsearch
 set ignorecase
 set number
+set timeoutlen=100
+set laststatus=2
 
 let mapleader = ","
 call plug#begin()
 Plug 'sainnhe/everforest'
+Plug 'vim-airline/vim-airline'
 Plug 'liuchengxu/vim-which-key'
 Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/vim-lsp'
+Plug 'dense-analysis/ale'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'mhinz/vim-startify'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'mbbill/undotree'
 " {{{
   let g:fzf_nvim_statusline = 0 " disable statusline overwriting
@@ -38,6 +43,49 @@ augroup myCmds
 au!
 autocmd VimEnter * silent !echo -ne "\e[2 q"
 augroup END
+let g:which_key_map = {}
+let g:which_key_map['w'] = {
+      \ 'name' : '+windows' ,
+      \ 'w' : ['<C-W>w'     , 'other-window']          ,
+      \ 'd' : ['<C-W>c'     , 'delete-window']         ,
+      \ '2' : ['<C-W>v'     , 'layout-double-columns'] ,
+      \ 'h' : ['<C-W>h'     , 'window-left']           ,
+      \ 'j' : ['<C-W>j'     , 'window-below']          ,
+      \ 'l' : ['<C-W>l'     , 'window-right']          ,
+      \ 'k' : ['<C-W>k'     , 'window-up']             ,
+      \ 'H' : ['<C-W>5<'    , 'expand-window-left']    ,
+      \ 'J' : [':resize +5'  , 'expand-window-below']   ,
+      \ 'L' : ['<C-W>5>'    , 'expand-window-right']   ,
+      \ 'K' : [':resize -5'  , 'expand-window-up']      ,
+      \ '=' : ['<C-W>='     , 'balance-window']        ,
+      \ 's' : ['<C-W>s'     , 'split-window-below']    ,
+      \ 'v' : ['<C-W>v'     , 'split-window-right']    ,
+      \ }
+let g:which_key_map['t'] = {
+      \ 'name' : '+tabs' ,
+      \ 'n' : [':tabnew'       , 'new-tab']           ,
+      \ 'c' : [':tabclose'     , 'close-tab']         ,
+      \ 'o' : [':tabonly'      , 'close-other-tabs']  ,
+      \ 'h' : [':tabprevious'  , 'previous-tab']      ,
+      \ 'l' : [':tabnext'      , 'next-tab']          ,
+      \ 'f' : [':tabfirst'     , 'first-tab']         ,
+      \ 'F' : [':tablast'      , 'last-tab']          ,
+      \ 'm' : [':tabmove'      , 'move-tab']          ,
+      \ '1' : [':tabnext 1'    , 'go-to-tab-1']       ,
+      \ '2' : [':tabnext 2'    , 'go-to-tab-2']       ,
+      \ '3' : [':tabnext 3'    , 'go-to-tab-3']       ,
+      \ '4' : [':tabnext 4'    , 'go-to-tab-4']       ,
+      \ '5' : [':tabnext 5'    , 'go-to-tab-5']       ,
+      \ '6' : [':tabnext 6'    , 'go-to-tab-6']       ,
+      \ '7' : [':tabnext 7'    , 'go-to-tab-7']       ,
+      \ '8' : [':tabnext 8'    , 'go-to-tab-8']       ,
+      \ '9' : [':tabnext 9'    , 'go-to-tab-9']       ,
+      \ }
+let g:which_key_use_floating_win = '1'
+let g:which_key_floating_opts = { 'width': '100', 'col': '100'}
+let g:which_key_max_size = '10'
+let g:which_key_sep = '->'
+call which_key#register(',', "g:which_key_map")
 inoremap " ""<left>
 inoremap ' ''<left>
 inoremap ( ()<left>
@@ -65,3 +113,18 @@ nnoremap <silent> , :WhichKey ','<CR>
         let g:everforest_better_performance = 1
 
         colorscheme everforest
+noremap <leader>d :LspDefinition<cr>
+noremap <leader>r :LspReferences<cr>
+noremap <leader>b :e#<cr>
+noremap <leader>g :Rg<cr>
+let g:airline#extensions#tabline#formatter = 'jsformatter'
+" Enable ALE
+let g:ale_linters = {'go': ['golangci-lint']}
+let g:ale_fixers = {'go': ['gofmt', 'goimports']}
+let g:ale_go_golangci_lint_package = 1  " Use installed golangci-lint
+
+" Automatically lint on save and insert mode leave
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 1
