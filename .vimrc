@@ -23,12 +23,12 @@ Plug 'mhinz/vim-startify'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'mbbill/undotree'
 " {{{
   let g:fzf_nvim_statusline = 0 " disable statusline overwriting
 
   nnoremap <silent> <leader><space> :Files<CR>
 " }}}
+Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -60,6 +60,7 @@ let g:which_key_map['w'] = {
       \ '=' : ['<C-W>='     , 'balance-window']        ,
       \ 's' : ['<C-W>s'     , 'split-window-below']    ,
       \ 'v' : ['<C-W>v'     , 'split-window-right']    ,
+      \ 'b' : [':e#'     , 'previous window']    ,
       \ }
 let g:which_key_map['t'] = {
       \ 'name' : '+tabs' ,
@@ -81,6 +82,12 @@ let g:which_key_map['t'] = {
       \ '8' : [':tabnext 8'    , 'go-to-tab-8']       ,
       \ '9' : [':tabnext 9'    , 'go-to-tab-9']       ,
       \ }
+let g:which_key_map['l'] = {
+      \ 'name' : '+Lsp' ,
+      \ 'h' : [':LspHover', 'hover'] ,
+      \ 'd' : [':LspDefinition', 'definition'] ,
+      \ 'r' : [':LspReferences', 'references'] ,
+      \}
 let g:which_key_use_floating_win = '1'
 let g:which_key_floating_opts = { 'width': '100', 'col': '100'}
 let g:which_key_max_size = '10'
@@ -93,7 +100,6 @@ inoremap [ []<left>
 inoremap { {}<left>
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
-nnoremap <leader>u :UndotreeToggle<CR>
 nnoremap <silent> , :WhichKey ','<CR>
   " Important!!
         if has('termguicolors')
@@ -113,9 +119,6 @@ nnoremap <silent> , :WhichKey ','<CR>
         let g:everforest_better_performance = 1
 
         colorscheme everforest
-noremap <leader>d :LspDefinition<cr>
-noremap <leader>r :LspReferences<cr>
-noremap <leader>b :e#<cr>
 noremap <leader>g :Rg<cr>
 let g:airline#extensions#tabline#formatter = 'jsformatter'
 " Enable ALE
@@ -128,3 +131,8 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8
+let g:airline_powerline_fonts = 1
