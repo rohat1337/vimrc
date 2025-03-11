@@ -137,3 +137,64 @@ set termencoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
 let g:airline_powerline_fonts = 1
+
+function! GoPLSCheck()
+  echom "Running: gopls check *.go"
+
+  " Run gopls check and capture output
+  let l:output = systemlist('gopls check *.go')
+
+  " Debugging: Show raw output
+  echom "Raw output received:"
+  for line in l:output
+    echom line
+  endfor
+
+  " Clear the quickfix list
+  call setqflist([], 'r')
+
+  " Initialize an empty quickfix list
+  let qf = []
+
+  " Regex pattern to match the output format
+  for line in l:output
+    let l:match = matchlist(line, '\v^(.*):(\d+):(\d+)-\d+:\s*(.*)$')
+
+    if !empty(l:match)
+      let l:file = l:match[1]
+      let l:lnum = l:match[2] + 0
+      let l:col = l:match[3] + 0
+      let l:msg = l:match[4]
+
+      " Determine type: 'E' for errors, 'W' for warnings
+      let l:type = 'W' " Default to warning
+      if l:msg =~? 'error\|undefined\|cannot\|failed'
+        let l:type = 'E'
+      endif
+
+      echom "Matched: File=" . l:file . " Line=" . l:lnum . " Col=" . l:col . " Msg=" . l:msg . " Type=" . l:type
+
+      call add(qf, {
+            \ 'filename': l:file,
+            \ 'lnum': l:lnum,
+            \ 'col': l:col,
+            \ 'text': l:msg,
+            \ 'type': l:type })
+    else
+      echom "Skipping unmatched line: " . line
+    endif
+  endfor
+
+  " Set the quickfix list
+  if !empty(qf)
+    call setqflist(qf, 'r')
+    echom "Quickfix list updated!"
+    copen
+  else
+    echom "No issues found."
+  endif
+endfunction
+
+
+" Define a Vim command
+command! GoPLSCheck call GoPLSCheck()
