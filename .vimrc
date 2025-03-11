@@ -12,6 +12,7 @@ set laststatus=2
 let mapleader = ","
 call plug#begin()
 Plug 'sainnhe/everforest'
+Plug 'romainl/vim-cool'
 Plug 'vim-airline/vim-airline'
 Plug 'liuchengxu/vim-which-key'
 Plug 'mattn/vim-lsp-settings'
